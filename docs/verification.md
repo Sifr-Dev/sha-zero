@@ -48,4 +48,8 @@ During development, strict warnings caught test-local shadowing/unused-code issu
 
 ## GitHub Actions results
 
-The workflow runs the same three configurations and a dependent 0.1.0 release-package job. Remote run results are recorded in the PR checks; this section does not claim a remote pass before the run completes.
+PR [#1](https://github.com/Sifr-Dev/sha-zero/pull/1) triggered both events successfully:
+
+- Push run [44795717959](https://github.com/Sifr-Dev/sha-zero/actions/runs/44795717959): **success** in 39 s.
+- Pull-request run [44795730577](https://github.com/Sifr-Dev/sha-zero/actions/runs/44795730577): **success** in 42 s.
+- In each run, `gcc-release`, `gcc-debug-sanitized`, `clang-release`, and `package` all completed successfully.

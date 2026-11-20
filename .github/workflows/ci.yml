@@ -1,0 +1,54 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: gcc-release
+            compiler: g++
+            type: Release
+            sanitizer: OFF
+          - name: gcc-debug-sanitized
+            compiler: g++
+            type: Debug
+            sanitizer: ON
+          - name: clang-release
+            compiler: clang++
+            type: Release
+            sanitizer: OFF
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.type }} -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DSIFR_WARNINGS_AS_ERRORS=ON -DSIFR_ENABLE_SANITIZERS=${{ matrix.sanitizer }}
+      - name: Build
+        run: cmake --build build --parallel 2
+      - name: Test
+        run: ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 ctest --test-dir build --output-on-failure
+  package:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build release package
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DSIFR_WARNINGS_AS_ERRORS=ON
+          cmake --build build --parallel 2
+          ctest --test-dir build --output-on-failure
+          test "$(./build/sifr-crypt --version)" = "sifr-crypt 0.1.0"
+          cmake --install build --prefix "$PWD/stage"
+          tar -czf sifr-crypt-0.1.0-linux-x86_64.tar.gz -C stage .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sifr-crypt-0.1.0
+          path: sifr-crypt-0.1.0-linux-x86_64.tar.gz

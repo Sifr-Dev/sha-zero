@@ -7,38 +7,73 @@
 
 # sifr-crypt
 
-zero-dependency SHA-256 (FIPS 180-4) hasher, written from the spec — no
-OpenSSL, no libsodium, no crates, no pip. C++17, posix only.
+Zero-dependency SHA-256 (FIPS 180-4), written from the specification in C++17.
+The reusable `sifr::Sha256` library and `sifr-crypt` CLI support arbitrary binary
+input without OpenSSL or other crypto dependencies.
+
+## Build and test
 
 ```sh
-sifr-crypt sha256 file.bin        # hash a file
-sifr-crypt sha256 -               # hash stdin
-sifr-crypt sha256 --selftest      # FIPS 180-4 / RFC 4231-style vectors
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build --parallel
+ctest --test-dir build --output-on-failure
 ```
 
-## evidence (this machine, 2026-11-17)
-
-```console
-$ ./sifr-crypt sha256 --selftest
-SHA256_SELFTEST PASS got=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-SHA256_SELFTEST PASS got=ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
-SHA256_SELFTEST PASS got=248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1
-SHA256_SELFTEST PASS got=d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592
-$ ./sifr-crypt sha256 /tmp/rand.bin   # matches `sha256sum` byte-exact
-524689c2769d2ac768af7ed6f2160a3b514561217b033f139cfd06f81388d23a
-```
-
-## build
+Strict warnings are errors by default. A GCC/Clang sanitizer build is available:
 
 ```sh
-g++ -O2 -std=c++17 -o sifr-crypt sha256.cpp
+cmake -S . -B build-sanitized -DCMAKE_BUILD_TYPE=Debug -DSIFR_ENABLE_SANITIZERS=ON
+cmake --build build-sanitized
+ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 \
+  ctest --test-dir build-sanitized --output-on-failure
 ```
 
-## scope
+## CLI
 
-SHA-256 only, streaming, files or stdin. No HMAC yet, no SHA-224/512, no
-password hashing (use Argon2 for that).
+```sh
+./build/sifr-crypt sha256 file.bin  # hash a file
+./build/sifr-crypt sha256 -         # hash stdin
+./build/sifr-crypt sha256           # stdin is the default
+./build/sifr-crypt --version        # 0.1.0
+```
 
-## license
+The CLI prints only the lowercase digest on success. Open, read, close, and
+output failures produce a diagnostic and nonzero status. Exactly one optional
+file argument is accepted; `-` explicitly selects stdin.
 
-`MIT` — see `LICENSE`. built from zero.
+## Library API
+
+```cpp
+#include <sifr/sha256.h>
+
+sifr::Sha256 hash;
+hash.update(first.data(), first.size());
+hash.update(second.data(), second.size());
+std::string hex = hash.hexdigest();
+
+// One-shot; data may be null only when size is zero.
+std::string empty = sifr::Sha256::hexdigest(nullptr, 0);
+```
+
+`update()` accepts unaligned binary buffers and rejects a null pointer with a
+nonzero size. `finish()`/`hexdigest()` are const and repeatable; they do not
+consume the state, so updates may continue. `finish()` returns a 32-byte
+`Sha256::Digest`. Inputs must satisfy the FIPS 180-4 length limit (less than
+2^64 bits). Copying a hash copies its complete streaming state.
+
+## Verification
+
+Tests include FIPS one-shot and streaming vectors (including one million `a`),
+all padding/buffer split boundaries, binary data, deterministic random
+`hashlib` differentials, large files/stdin, invalid arguments, and real I/O
+failures. See [docs/verification.md](docs/verification.md) for recorded local
+and CI evidence.
+
+## Scope
+
+SHA-256 only. This is not HMAC, password hashing, or a general crypto library;
+use Argon2 for password hashing. No SHA-224 or SHA-512.
+
+## License
+
+`MIT` — see `LICENSE`. Built from zero.

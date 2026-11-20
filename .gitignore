@@ -1,0 +1,8 @@
+/build/
+/build-*/
+/sifr-crypt
+*.o
+*.a
+*.so
+__pycache__/
+*.pyc

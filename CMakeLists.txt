@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(sifr-crypt VERSION 0.1.0 LANGUAGES CXX)
 
 include(CTest)
+include(CMakePackageConfigHelpers)
 find_package(Python3 COMPONENTS Interpreter)
 
 option(SIFR_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
@@ -45,6 +46,20 @@ install(TARGETS sifr-crypt sifr_sha256
     ARCHIVE DESTINATION lib)
 install(DIRECTORY include/ DESTINATION include)
 install(EXPORT sifr-crypt-targets NAMESPACE sifr:: DESTINATION lib/cmake/sifr-crypt)
+
+configure_package_config_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/sifr-cryptConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/sifr-cryptConfig.cmake
+    INSTALL_DESTINATION lib/cmake/sifr-crypt)
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/sifr-cryptConfigVersion.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion)
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/sifr-cryptConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/sifr-cryptConfigVersion.cmake
+    DESTINATION lib/cmake/sifr-crypt)
+install(FILES LICENSE DESTINATION share/licenses/sifr-crypt)
 
 if(BUILD_TESTING)
     add_executable(sha256_test tests/sha256_test.cpp)

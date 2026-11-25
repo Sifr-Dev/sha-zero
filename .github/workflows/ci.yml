@@ -48,6 +48,8 @@ jobs:
           test "$(./build/sifr-crypt --version)" = "sifr-crypt 0.1.0"
           cmake --install build --prefix "$PWD/stage"
           tar -czf sifr-crypt-0.1.0-linux-x86_64.tar.gz -C stage .
+      - name: Verify downstream CMake package
+        run: sh tests/package-check.sh
       - uses: actions/upload-artifact@v4
         with:
           name: sifr-crypt-0.1.0

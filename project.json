@@ -1,0 +1,10 @@
+{
+  "name": "sha-zero",
+  "description": "SHA and zero-knowledge crypto experiments",
+  "stack": [
+    "cmake",
+    "make"
+  ],
+  "status": "experimental",
+  "primary_language": "C++"
+}

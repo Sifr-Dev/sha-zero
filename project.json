@@ -1,10 +1,14 @@
 {
-  "name": "sha-zero",
-  "description": "SHA and zero-knowledge crypto experiments",
+  "name": "Abyss",
+  "displayName": "Abyss",
+  "repo": "sha-zero",
+  "description": "SHA-256 written from FIPS 180-4 in C++17 with no crypto dependencies",
+  "summary": "Streaming SHA-256 library, CLI and installable CMake package, verified against NIST vectors and hashlib.",
   "stack": [
     "cmake",
     "make"
   ],
-  "status": "experimental",
-  "primary_language": "C++"
+  "status": "active",
+  "primary_language": "C++",
+  "license": "MIT"
 }

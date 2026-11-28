@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" width="1200" height="360" role="img" aria-label="Abyss — SHA-256 FROM THE SPECIFICATION">
+  <defs>
+    <linearGradient id="ink" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset=".55" stop-color="#c8cdd7"/>
+      <stop offset="1" stop-color="#7d8593"/>
+    </linearGradient>
+    <radialGradient id="glow" cx=".2" cy=".25" r=".9">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".07"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#94a3b8" stroke-opacity=".06"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="360" rx="20" fill="#050607"/>
+  <rect width="1200" height="360" rx="20" fill="url(#grid)"/>
+  <rect width="1200" height="360" rx="20" fill="url(#glow)"/>
+  <g stroke="#94a3b8" stroke-opacity=".18" fill="none">
+    <path d="M80 288 H1120"/>
+    <path d="M80 72 H1120" stroke-dasharray="2 10"/>
+    <circle cx="1048" cy="168" r="86"/>
+    <circle cx="1048" cy="168" r="118" stroke-dasharray="1 14"/>
+    <path d="M1048 50 V286 M930 168 H1166"/>
+  </g>
+  <g font-family="'JetBrains Mono', ui-monospace, SFMono-Regular, monospace">
+    <text x="80" y="78" fill="#8b93a7" font-size="13" letter-spacing="6">ABYSS // HASH PRIMITIVE</text>
+    <text x="80" y="216" fill="url(#ink)" font-size="104" font-weight="700" letter-spacing="10">ABYSS</text>
+    <text x="84" y="262" fill="#c8cdd7" font-size="17" letter-spacing="3">SHA-256 FROM THE SPECIFICATION</text>
+  </g>
+  <g fill="#e8ecef">
+    <rect x="80" y="286" width="180" height="3"/>
+    <rect x="268" y="286" width="28" height="3" opacity=".55"/>
+    <rect x="304" y="286" width="10" height="3" opacity=".3"/>
+  </g>
+  <g font-family="'JetBrains Mono', monospace" font-size="11" fill="#5f6675" letter-spacing="2">
+    <text x="1120" y="330" text-anchor="end">NEGATIVE · ENGINEERING</text>
+  </g>
+</svg>
